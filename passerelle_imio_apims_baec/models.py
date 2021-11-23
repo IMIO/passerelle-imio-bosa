@@ -46,7 +46,7 @@ class ApimsBaecConnector(BaseResource):
         return session
 
     @endpoint(
-        name="Tester la connexion"
+        name="Tester la connexion",
         perm="can_access",
         description="Valider la connexion entre APIMS et Publik",
     )
@@ -54,3 +54,20 @@ class ApimsBaecConnector(BaseResource):
         url = self.url  # Url et endpoint à contacter
         return self.session.get(url).json()
 
+    @endpoint(
+        name="Lister des documents d'une personne",
+        perm="can_access",
+        description="Liste les documents disponibles pour une personne identifiée par son numéro de registre national"
+    )
+    def read_person_documents(self, request):
+        url = f"{self.url}/{request.GET.person_nrn}"
+        return self.session.get(url).json()
+
+    @endpoint(
+        name="Lire le document d'une personne",
+        perm="can_access",
+        description="Lire le document d'une personne"
+    )
+    def read_document(self, request):
+        url = f"{self.url}/{request.GET.person_nrn}/{request.GET.certificate_reference}/{request.GET.certificate_type}"
+        return self.session.get(url).json()
