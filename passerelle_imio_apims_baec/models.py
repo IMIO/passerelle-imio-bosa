@@ -12,15 +12,15 @@ from passerelle.utils.jsonresponse import APIError
 from requests.exceptions import ConnectionError
 
 
-class ApimsBosaConnector(BaseResource):
+class ApimsBaecConnector(BaseResource):
     """
-    Connecteur APIMS-BOSA
+    Connecteur APIMS BAEC
     """
     url = models.CharField(
         max_length=128,
         blank=True,
         verbose_name="URL",
-        help_text="URL de l'application iA.Delib",
+        help_text="URL de APIMS BAEC",
     )
     username = models.CharField(
         max_length=128,
@@ -32,11 +32,11 @@ class ApimsBosaConnector(BaseResource):
         blank=True,
         verbose_name="Mot de passe",
     )
-    api_description = "Connecteur permettant d'intéragir avec une instance d'iA.Delib"
+    api_description = "Connecteur permettant d'intéragir avec APIMS BAEC"
     category = "Connecteurs iMio"
 
     class Meta:
-        verbose_name = "Connecteur iA.Delib"
+        verbose_name = "Connecteur APIMS BAEC"
 
     @property
     def session(self):
@@ -46,8 +46,9 @@ class ApimsBosaConnector(BaseResource):
         return session
 
     @endpoint(
+        name="Tester la connexion"
         perm="can_access",
-        description="Valider la connexion entre iA.Delib et Publik",
+        description="Valider la connexion entre APIMS et Publik",
     )
     def test(self, request):
         url = self.url  # Url et endpoint à contacter

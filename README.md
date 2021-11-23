@@ -1,17 +1,17 @@
-Passerelle connector with BOSA services 
+Passerelle connector with BAEC services 
 =======================================
 
-This passerelle is meant to be connected to BOSA using iMio API Microservices 
-(APIMS).
+This passerelle is meant to be connected to BAEC using iMio API Microservices 
+(APIMS). APIMS interrogates BOSA's services.
 
 Installation
 ------------
 
  - add to Passerelle installed apps settings:
-   INSTALLED_APPS += ('passerelle_imio_bosa',)
+   INSTALLED_APPS += ('passerelle_imio_apims_baec',)
 
  - enable module:
-   PASSERELLE_APP_PASSERELLE_IMIO_BOSA_ENABLED = True
+   PASSERELLE_APP_PASSERELLE_IMIO_APIMS_BAEC_ENABLED = True
 
 
 Usage

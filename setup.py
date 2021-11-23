@@ -4,7 +4,7 @@ from setuptools import setup
 version = "1.0.5"
 
 setup(
-    name="passerelle-imio-bosa",
+    name="passerelle-imio-apims-baec",
     version=version,
     author="iMio",
     author_email="support-ts@imio.be",
@@ -15,7 +15,7 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.7",
     ],
-    url="https://github.com/IMIO/passerelle-imio-bosa",
+    url="https://github.com/IMIO/passerelle-imio-apims-baec",
     install_requires=[
         "django>=2.2",
     ],
