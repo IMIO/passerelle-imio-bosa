@@ -1,16 +1,11 @@
-from builtins import str
-
-import requests, json
+import requests
 from django.db import models
 from django.http import Http404
 from django.http import HttpResponse
 from django.urls import reverse
 from django.core.exceptions import ValidationError
 from passerelle.base.models import BaseResource
-from passerelle.compat import json_loads
 from passerelle.utils.api import endpoint
-from passerelle.utils.jsonresponse import APIError
-from requests.exceptions import ConnectionError
 
 def validate_url(value):
     if value.endswith("/"):
@@ -22,12 +17,13 @@ class ApimsBaecConnector(BaseResource):
     """
     Connecteur APIMS BAEC
     """
-    url = models.CharField(
+    url = models.URLField(
         max_length=128,
         blank=True,
         verbose_name="URL",
         help_text="URL de APIMS BAEC",
         validators=[validate_url],
+        default="https://api-staging.imio.be/bosa/v1/civil-status-documents"
     )
     username = models.CharField(
         max_length=128,
@@ -59,7 +55,7 @@ class ApimsBaecConnector(BaseResource):
         serializer_type="json-api",
     )
     def test(self, request):
-        url = self.url  # Url et endpoint à contacter
+        url = self.url
         return self.session.get(url).json()
 
     @endpoint(
@@ -77,6 +73,7 @@ class ApimsBaecConnector(BaseResource):
     def list_person_documents(self, request, rn):
         url = f"{self.url}/{rn}"
         return self.session.get(url).json()
+
 
     @endpoint(
         name="read-document",
@@ -97,9 +94,10 @@ class ApimsBaecConnector(BaseResource):
                 "example_value": "E",
             },
         },
-        serializer_type="",
     )
     def read_document(self, request, rn, certificate_reference, certificate_type):
         url = f"{self.url}/{rn}/{certificate_reference}/{certificate_type}"
         response = requests.get(url, auth=(self.username, self.password))
+        if response.status_code != 200:
+           return HttpResponse("502 Bad Gateway", content_type='text/plain')
         return HttpResponse(response.content, content_type="application/pdf")
