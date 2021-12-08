@@ -16,6 +16,22 @@ def validate_url(value):
 class ApimsBaecConnector(BaseResource):
     """
     Connecteur APIMS BAEC
+
+    Attributes
+    ----------
+    url : str
+        a formatted string to print out what the animal says
+    username : str
+        username used to connect to apims
+    password : str
+        password used to connect to apims
+
+    Methods
+    -------
+    list_person_documents(rn)
+        Gets available documents for the person
+    read_document (rn, certificate_reference, certificate_type)
+       Get asked document as PDF     
     """
     url = models.URLField(
         max_length=128,
@@ -71,6 +87,16 @@ class ApimsBaecConnector(BaseResource):
         serializer_type="json-api",
     )
     def list_person_documents(self, request, rn):
+        """ Gets available documents for the person
+        Parameters
+        ----------
+        rn : str
+            National Registration number of the person
+        Returns
+        -------
+        dict
+            all document with reference and available type
+        """
         url = f"{self.url}/{rn}"
         return self.session.get(url).json()
 
@@ -96,6 +122,19 @@ class ApimsBaecConnector(BaseResource):
         },
     )
     def read_document(self, request, rn, certificate_reference, certificate_type):
+        """ Get asked document as PDF
+        Parameters
+        ----------
+        rn : str
+            National Registration number of the person
+        certificate_reference : str
+            Reference of the certificate
+        certificate_type : str
+            Type of document
+        Returns
+        -------
+        PDF document or plain text error
+        """
         url = f"{self.url}/{rn}/{certificate_reference}/{certificate_type}"
         response = requests.get(url, auth=(self.username, self.password))
         if response.status_code != 200:
