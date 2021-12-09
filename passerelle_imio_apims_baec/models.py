@@ -7,12 +7,15 @@ from passerelle.base.models import BaseResource
 from passerelle.utils.api import endpoint
 from passerelle.utils.jsonresponse import APIError
 
+
 def validate_url(value):
     if value.endswith("/"):
         raise ValidationError(
             ('%(value)s ne dois pas finir avec un "/"'),
             params={'value': value},
         )
+
+
 class ApimsBaecConnector(BaseResource):
     """
     Connecteur APIMS BAEC
