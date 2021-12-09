@@ -1,11 +1,11 @@
 import requests
 from django.db import models
-from django.http import Http404
 from django.http import HttpResponse
 from django.urls import reverse
 from django.core.exceptions import ValidationError
 from passerelle.base.models import BaseResource
 from passerelle.utils.api import endpoint
+from passerelle.utils.jsonresponse import APIError
 
 def validate_url(value):
     if value.endswith("/"):
@@ -31,7 +31,7 @@ class ApimsBaecConnector(BaseResource):
     list_person_documents(rn)
         Gets available documents for the person
     read_document (rn, certificate_reference, certificate_type)
-       Get asked document as PDF     
+       Get asked document as PDF
     """
     url = models.URLField(
         max_length=128,
@@ -133,10 +133,10 @@ class ApimsBaecConnector(BaseResource):
             Type of document
         Returns
         -------
-        PDF document or plain text error
+        PDF document
         """
         url = f"{self.url}/{rn}/{certificate_reference}/{certificate_type}"
         response = requests.get(url, auth=(self.username, self.password))
-        if response.status_code != 200:
-           return HttpResponse("502 Bad Gateway", content_type='text/plain')
+        if response.status_code >= 400:
+           raise APIError("502 Bad gateway", http_status=502, data={"target_url": url, "error": response.status_code})
         return HttpResponse(response.content, content_type="application/pdf")
