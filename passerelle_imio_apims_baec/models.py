@@ -147,6 +147,7 @@ class ApimsBaecConnector(BaseResource):
     @endpoint(
         name="read-document",
         perm="can_access",
+        methods=["post"],
         description="Lire le document d'une personne",
         parameters={
             "rn": {
