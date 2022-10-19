@@ -45,7 +45,7 @@ class ApimsBaecConnector(BaseResource):
         verbose_name="URL",
         help_text="URL de APIMS BAEC",
         validators=[validate_url],
-        default="https://api-staging.imio.be/bosa/v1/civil-status-documents"
+        default="https://api-staging.imio.be/bosa/v1"
     )
     username = models.CharField(
         max_length=128,
