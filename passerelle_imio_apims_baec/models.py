@@ -105,17 +105,23 @@ class ApimsBaecConnector(BaseResource):
                 "description": "Numéro de Registre national",
                 "example_value": "89041522261",
             },
+            "category": {
+                "description": "Catégorie du document",
+                "example_value": "BIRTH_CERTIFICATE",
+            }
         },
         serializer_type="json-api",
         display_order=0,
         display_category="Documents",
     )
-    def list_person_documents(self, request, rn):
+    def list_person_documents(self, request, rn, category=None):
         """ Gets available documents for the person
         Parameters
         ----------
         rn : str
             National Registration number of the person
+        category : str
+            Category of the document
         Returns
         -------
         dict
@@ -125,7 +131,7 @@ class ApimsBaecConnector(BaseResource):
 
         self.logger.info("Liste des documents disponibles")
         try:
-            response = self.session.get(url)
+            response = self.session.get(url, params={"category": category})
         except RequestException as e:
             self.logger.warning(f'BAEC APIMS Error: {e}')
             raise APIError(f'BAEC APIMS Error: {e}')
