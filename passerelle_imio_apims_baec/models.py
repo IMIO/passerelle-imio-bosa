@@ -212,3 +212,47 @@ class ApimsBaecConnector(BaseResource):
             self.logger.warning(f'BAEC APIMS Error: {e}')
             raise APIError(f'BAEC APIMS Error: {e}')
         return pdf_response
+
+    @endpoint(
+        name="request-document-migration",
+        perm="can_access",
+        methods=["post"],
+        description="Demander l'importation d'un acte dans la BAEC",
+        parameters={
+            "migration_command": {
+                "description": "Numéro d'identifiant pour la demande de migration",
+                "example_value": "06715166470089041522261F1504198901111202115041989Li",
+            },
+        },
+        display_category="Documents"
+    )
+    def request_document_migration(self, request, migration_command):
+        """ Post request to migrate a document to the BAEC
+        migration_command : str
+            ID to migrate request document
+        """
+        url = f"{self.url}/civil-status-documents/migration-requests"
+
+        json_data = {'migration_command': migration_command}
+
+        self.logger.info("Envoi d'une demande de migation dans la BAEC")
+
+        try:
+            response = self.session.post(url, json=json_data)
+        except RequestException as e:
+            self.logger.warning(f'BAEC APIMS Error: {e}')
+            raise APIError(f'BAEC APIMS Error: {e}')
+
+        json_response = None
+        try:
+            json_response = response.json()
+        except ValueError:
+            self.logger.warning('BAEC APIMS Error: bad JSON response')
+            raise APIError('BAEC APIMS Error: bad JSON response')
+
+        try:
+            response.raise_for_status()
+        except RequestException as e:
+            self.logger.warning(f'BAEC APIMS Error: {e} {json_response}')
+            raise APIError(f'BAEC APIMS Error: {e} {json_response}')
+        return json_response
