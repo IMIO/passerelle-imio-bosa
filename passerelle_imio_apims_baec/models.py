@@ -231,7 +231,7 @@ class ApimsBaecConnector(BaseResource):
         migration_command : str
             ID to migrate request document
         """
-        url = f"{self.url}/civil-status-documents/migration-requests"
+        url = f"{self.url}/civil-status-documents-migration-requests"
 
         json_data = {'migration_command': migration_command}
 
